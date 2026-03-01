@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Serhat Paksoy | Dijital Kartvizit</title>
+    
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S22CVD496Y"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-S22CVD496Y');
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; 
+            overflow-x: hidden;
+        }
+        .bg-fixed-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(226,232,240,0.9) 100%);
+        }
+        .glow {
+            position: absolute; width: 400px; height: 400px; border-radius: 50%; top: -150px; right: -150px; z-index: -1;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+        }
+        .glass { 
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+        }
+        .btn-active:active { transform: scale(0.96); }
+        
+        /* Disable long press and selection for a 'native app' feel */
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none; 
+            -webkit-touch-callout: none;
+        }
+
+        @keyframes fadeInUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        .animate-fade-in { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; } 
+        .delay-2 { animation-delay: 0.2s; } 
+        .delay-3 { animation-delay: 0.3s; } 
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Custom Toast Notification */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 12px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body class="antialiased text-slate-900 bg-slate-50">
+
+    <div class="bg-fixed-layer"></div>
+    <div class="glow"></div>
+
+    <!-- Notification Toast -->
+    <div id="toast">Bağlantı kopyalandı!</div>
+
+    <div class="relative z-10 min-h-[100dvh] w-full max-w-md mx-auto flex flex-col px-6 py-8 pb-12">
+        
+        <!-- Top Action Button -->
+        <button onclick="shareProfile()" aria-label="Profili Paylaş" class="absolute top-6 right-6 p-3 bg-white/60 backdrop-blur-md rounded-full shadow-sm border border-white/80 text-slate-600 hover:text-blue-600 active:scale-90 transition-all z-20">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+        </button>
+
+        <!-- Header Section -->
+        <header class="flex flex-col items-center shrink-0 mb-8 animate-fade-in">
+            <div class="relative group">
+                <div class="w-32 h-32 rounded-full border-[6px] border-white shadow-2xl overflow-hidden bg-slate-100 ring-1 ring-slate-200 transition-transform duration-500 group-hover:scale-105">
+                    <img class="w-full h-full object-cover" src="serhat-paksoy.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Serhat+Paksoy&background=00529b&color=fff&size=256'" alt="Serhat Paksoy">
+                </div>
+                <div class="absolute bottom-1.5 right-1.5 w-7 h-7 bg-blue-600 border-2 border-white rounded-full flex items-center justify-center shadow-lg">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="mt-6 text-2xl font-[800] tracking-tight text-slate-800 uppercase text-center">Serhat Paksoy</h1>
+            <div class="flex items-center mt-2">
+                <span class="h-[1px] w-5 bg-blue-400 mr-3 opacity-40"></span>
+                <p class="text-[12px] font-bold text-blue-600 tracking-[0.4em] uppercase">Lüleburgaz</p>
+                <span class="h-[1px] w-5 bg-blue-400 ml-3 opacity-40"></span>
+            </div>
+        </header>
+
+        <!-- Main Links -->
+        <main class="flex-grow flex flex-col justify-start gap-4 w-full">
+            <!-- DEVA Partisi -->
+            <a href="https://www.facebook.com/groups/365236349656068/" target="_blank" class="flex items-center p-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/60 btn-active transition-all group animate-fade-in delay-1">
+                <div class="flex-shrink-0 bg-blue-50 p-2.5 rounded-xl border border-blue-100 group-hover:bg-blue-100 transition-colors">
+                    <img class="h-8 w-8 object-contain" src="deva.png" onerror="this.src='https://www.google.com/s2/favicons?domain=devapartisi.org.tr&sz=128'" alt="DEVA Logosu">
+                </div>
+                <div class="ml-4 flex-grow">
+                    <h3 class="text-[17px] font-bold text-[#00529b] leading-tight">DEVA Partisi</h3>
+                    <p class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider mt-1">İlçe Başkanı</p>
+                </div>
+                <svg class="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+
+            <!-- Briç Spor Kulübü -->
+            <a href="https://www.facebook.com/groups/214734435336603/" target="_blank" class="flex items-center p-4 bg-slate-900/95 backdrop-blur-md rounded-2xl shadow-xl btn-active transition-all border border-slate-800 group animate-fade-in delay-2">
+                <div class="flex-shrink-0 bg-white p-2.5 rounded-xl group-hover:scale-105 transition-transform">
+                    <img class="h-8 w-8 object-contain" src="lbsk.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Briç+SK&background=fff&color=000'" alt="LBSK Logo">
+                </div>
+                <div class="ml-4 flex-grow">
+                    <h3 class="text-[17px] font-bold text-white leading-tight">Briç Spor Kulübü</h3>
+                    <p class="text-[11px] text-blue-400 font-bold uppercase tracking-wider mt-1">Kulüp Başkanı</p>
+                </div>
+                <svg class="w-5 h-5 text-slate-600 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+
+            <!-- Dual Action Buttons -->
+            <div class="grid grid-cols-2 gap-4 mt-2 animate-fade-in delay-3">
+                <button onclick="downloadVCard()" class="flex items-center justify-center py-4 px-2 bg-blue-600 rounded-2xl btn-active transition-all text-[13px] font-bold text-white shadow-lg shadow-blue-500/30">
+                    <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    Rehbere Ekle
+                </button>
+                <a href="https://tr.linkedin.com/in/serhat-paksoy" target="_blank" class="flex items-center justify-center py-4 px-2 glass rounded-2xl btn-active transition-all text-[13px] font-bold text-slate-700 border border-slate-200 shadow-sm">
+                    <svg class="h-5 w-5 mr-2 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn
+                </a>
+            </div>
+
+            <!-- Social Media Section -->
+            <div class="flex justify-around items-center glass border border-slate-200/60 p-2 rounded-2xl mt-4 animate-fade-in delay-4">
+                <a href="https://instagram.com/sosyal.klbk" target="_blank" aria-label="Instagram" class="p-3.5 text-slate-500 hover:text-pink-600 btn-active transition-all">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.667.072 4.947c.2 4.353 2.612 6.773 6.973 6.973 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c4.351-.2 6.773-2.612 6.973-6.973.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.2-4.353-2.612-6.773-6.973-6.973C15.667.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+                <a href="https://twitter.com/serhat_paksoy" target="_blank" aria-label="X (Twitter)" class="p-3.5 text-slate-500 hover:text-black btn-active transition-all">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                </a>
+                <a href="https://facebook.com/serhat.paksoy" target="_blank" aria-label="Facebook" class="p-3.5 text-slate-500 hover:text-blue-600 btn-active transition-all">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+                </a>
+                <a href="https://tiktok.com/@serhatpaksoy" target="_blank" aria-label="TikTok" class="p-3.5 text-slate-500 hover:text-black btn-active transition-all">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93v6.14c0 3.48-2.63 6.5-6.08 6.8-3.64.32-6.99-2.14-7.59-5.71-.62-3.77 1.88-7.51 5.57-8.33.66-.15 1.34-.21 2.02-.2v4.03c-.28-.02-.56-.03-.84-.02-1.71.06-3.17 1.36-3.33 3.09-.17 1.88 1.23 3.65 3.11 3.95 1.84.29 3.67-1.02 3.97-2.86.03-.18.04-.37.04-.55V.02z"/></svg>
+                </a>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="shrink-0 py-8 text-center animate-fade-in delay-4 mt-auto">
+            <p class="text-[10px] font-bold tracking-[0.5em] uppercase text-slate-400 opacity-80">Serhat Paksoy &copy; <span id="year">2026</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Update Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Show Toast Function
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        // Sharing Logic
+        function shareProfile() {
+            const shareData = {
+                title: 'Serhat Paksoy',
+                text: 'Serhat Paksoy - Dijital Kartvizit',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => { if(typeof gtag === 'function') gtag('event', 'share', { method: 'native_share' }); })
+                    .catch((err) => {
+                        console.log("Paylaşım iptal edildi veya hata oluştu.");
+                    });
+            } else {
+                // Fallback to Copy to Clipboard
+                copyToClipboard(window.location.href);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showToast("Bağlantı kopyalandı!");
+        }
+
+        // Generate and Download vCard
+        function downloadVCard() {
+            const vCardData = [
+                "BEGIN:VCARD",
+                "VERSION:3.0",
+                "FN:Serhat Paksoy",
+                "ORG:DEVA Partisi;Briç Spor Kulübü",
+                "TITLE:İlçe Başkanı / Kulüp Başkanı",
+                "URL:" + window.location.href,
+                "NOTE:Dijital Kartvizit üzerinden eklendi.",
+                "END:VCARD"
+            ].join("\n");
+
+            const blob = new Blob([vCardData], { type: "text/vcard" });
+            const url = window.URL.createObjectURL(blob);
+            const newLink = document.createElement("a");
+            newLink.download = "Serhat_Paksoy.vcf";
+            newLink.href = url;
+            newLink.click();
+            window.URL.revokeObjectURL(url);
+            
+            showToast("Kişi kartı indiriliyor...");
+            if(typeof gtag === 'function') gtag('event', 'contact_add', { method: 'vcard_download' });
+        }
+
+        // Security / Content Protection
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = function(e) {
+            // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if(e.keyCode == 123 || 
+               (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || 
+               (e.ctrlKey && e.keyCode == 85)) {
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
